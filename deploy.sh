@@ -132,7 +132,7 @@ PORT=23781 BASE_PATH=/ pnpm --filter @workspace/trabalho-justo run build
 echo "🌐 6. Configurando Nginx..."
 
 # Criar a configuração do Nginx dinâmica
-sudo bash -c "cat <<EOF > /etc/nginx/sites-available/trabalhojusto
+sudo tee /etc/nginx/sites-available/trabalhojusto <<EOF > /dev/null
 server {
     listen 80;
     server_name $IP_PUBLICO;
@@ -154,7 +154,7 @@ server {
         proxy_cache_bypass \$http_upgrade;
     }
 }
-EOF"
+EOF
 
 # Habilitar site no Nginx e reiniciar
 sudo rm -f /etc/nginx/sites-enabled/default
