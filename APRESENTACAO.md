@@ -88,6 +88,8 @@ Permite a aproximação de candidatos e mercado de trabalho decente através de:
 
 ## 🖥️ Cheatsheet: Comandos para Executar
 
+### 🏠 Execução Local (Windows - Terminal CMD)
+
 Para rodar a aplicação localmente utilizando a infraestrutura baseada no Docker (para o banco de dados PostgreSQL) e Node.js, execute os comandos no terminal **CMD**:
 
 ```cmd
@@ -112,3 +114,24 @@ set PORT=23781
 set BASE_PATH=/
 npx pnpm --filter @workspace/trabalho-justo run dev
 ```
+
+### ☁️ Implantação em Produção (VPS Ubuntu)
+
+Para configurar e colocar a aplicação no ar de forma 100% automatizada em sua nova VPS rodando Ubuntu sob o domínio **`ads8.zeusadsbh.shop`**, execute os seguintes comandos no terminal SSH:
+
+```bash
+# 1. Instalar o Git no sistema (necessário caso a VPS seja nova)
+sudo apt update && sudo apt install -y git
+
+# 2. Clonar o projeto do repositório
+git clone https://github.com/vivoeasy100/ads8.git
+cd ads8
+
+# 3. Dar permissão de execução ao script automatizado
+chmod +x deploy.sh
+
+# 4. Executar o instalador automático passando o domínio do projeto
+./deploy.sh ads8.zeusadsbh.shop
+```
+
+O script fará a instalação de todas as dependências (Node, pnpm, PM2, PostgreSQL, Nginx), criará as tabelas do banco, rodará a carga inicial (seed) e configurará o proxy reverso do Nginx apontando para o endereço **`http://ads8.zeusadsbh.shop`**.
