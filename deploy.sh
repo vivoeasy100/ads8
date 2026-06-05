@@ -29,6 +29,22 @@ echo "🚀 Iniciando implantação automatizada na pasta: $PROJECT_PATH"
 echo "🌐 Configurando servidor Nginx para o IP/Domínio: $IP_PUBLICO"
 
 # ------------------------------------------------------------------------------
+# 0. Configurar Swap (para evitar travamento por falta de memória RAM na compilação)
+# ------------------------------------------------------------------------------
+SWAP_ACTIVE=$(swapon --show --noheadings | wc -l)
+if [ "$SWAP_ACTIVE" -eq 0 ]; then
+    echo "💾 Nenhuma memória Swap ativa detectada. Criando swapfile de 2GB..."
+    sudo fallocate -l 2G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+    echo "✔️ Memória Swap de 2GB criada com sucesso!"
+else
+    echo "✔️ Memória Swap já está ativa no sistema."
+fi
+
+# ------------------------------------------------------------------------------
 # 1. Atualização e Instalações de Sistema
 # ------------------------------------------------------------------------------
 echo "📦 1. Atualizando sistema e instalando dependências base..."
