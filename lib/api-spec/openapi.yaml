@@ -1,0 +1,1285 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: TrabalhoJusto - Plataforma de indicadores ODS 8
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication
+  - name: companies
+    description: Company management
+  - name: indicators
+    description: ODS 8 indicators
+  - name: employees
+    description: Employee records
+  - name: trainings
+    description: Training and capacity building
+  - name: dashboard
+    description: Dashboard summaries and analytics
+  - name: jobs
+    description: Job listings
+  - name: courses
+    description: Training courses
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /companies:
+    get:
+      operationId: listCompanies
+      tags: [companies]
+      summary: List all companies
+      responses:
+        "200":
+          description: List of companies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Company"
+    post:
+      operationId: createCompany
+      tags: [companies]
+      summary: Create a new company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCompanyBody"
+      responses:
+        "201":
+          description: Created company
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+
+  /companies/{id}:
+    get:
+      operationId: getCompany
+      tags: [companies]
+      summary: Get a company by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Company details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+        "404":
+          description: Not found
+    put:
+      operationId: updateCompany
+      tags: [companies]
+      summary: Update a company
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCompanyBody"
+      responses:
+        "200":
+          description: Updated company
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Company"
+    delete:
+      operationId: deleteCompany
+      tags: [companies]
+      summary: Delete a company
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /companies/{companyId}/indicators:
+    get:
+      operationId: listIndicators
+      tags: [indicators]
+      summary: List ODS 8 indicators for a company
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of indicators
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Indicator"
+    post:
+      operationId: createIndicator
+      tags: [indicators]
+      summary: Create a new indicator entry
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateIndicatorBody"
+      responses:
+        "201":
+          description: Created indicator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Indicator"
+
+  /companies/{companyId}/indicators/{id}:
+    put:
+      operationId: updateIndicator
+      tags: [indicators]
+      summary: Update an indicator
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateIndicatorBody"
+      responses:
+        "200":
+          description: Updated indicator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Indicator"
+    delete:
+      operationId: deleteIndicator
+      tags: [indicators]
+      summary: Delete an indicator
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /companies/{companyId}/employees:
+    get:
+      operationId: listEmployees
+      tags: [employees]
+      summary: List employees for a company
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Employee"
+    post:
+      operationId: createEmployee
+      tags: [employees]
+      summary: Add an employee
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEmployeeBody"
+      responses:
+        "201":
+          description: Created employee
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employee"
+
+  /companies/{companyId}/employees/{id}:
+    put:
+      operationId: updateEmployee
+      tags: [employees]
+      summary: Update an employee
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEmployeeBody"
+      responses:
+        "200":
+          description: Updated employee
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employee"
+    delete:
+      operationId: deleteEmployee
+      tags: [employees]
+      summary: Delete an employee
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /companies/{companyId}/trainings:
+    get:
+      operationId: listTrainings
+      tags: [trainings]
+      summary: List training programs for a company
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of trainings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Training"
+    post:
+      operationId: createTraining
+      tags: [trainings]
+      summary: Add a training program
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTrainingBody"
+      responses:
+        "201":
+          description: Created training
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Training"
+
+  /companies/{companyId}/trainings/{id}:
+    put:
+      operationId: updateTraining
+      tags: [trainings]
+      summary: Update a training
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTrainingBody"
+      responses:
+        "200":
+          description: Updated training
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Training"
+    delete:
+      operationId: deleteTraining
+      tags: [trainings]
+      summary: Delete a training
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get overall platform ODS 8 summary
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /companies/{companyId}/ods8-score:
+    get:
+      operationId: getOds8Score
+      tags: [dashboard]
+      summary: Get ODS 8 compliance score for a company
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ODS 8 compliance score and breakdown
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ods8Score"
+
+  /companies/{companyId}/indicator-trends:
+    get:
+      operationId: getIndicatorTrends
+      tags: [dashboard]
+      summary: Get indicator trends over time for a company
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Indicator trend data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/IndicatorTrend"
+
+  /companies/{companyId}/diversity-breakdown:
+    get:
+      operationId: getDiversityBreakdown
+      tags: [dashboard]
+      summary: Get gender and age diversity breakdown for a company
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Diversity breakdown data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DiversityBreakdown"
+
+  /curriculos:
+    get:
+      operationId: listResumes
+      tags: [resumes]
+      summary: List all resumes
+      responses:
+        "200":
+          description: List of resumes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Resume"
+    post:
+      operationId: createResume
+      tags: [resumes]
+      summary: Create a new resume
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateResumeBody"
+      responses:
+        "201":
+          description: Created resume
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resume"
+
+  /curriculos/{id}:
+    get:
+      operationId: getResume
+      tags: [resumes]
+      summary: Get a resume by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Resume details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resume"
+        "404":
+          description: Not found
+    put:
+      operationId: updateResume
+      tags: [resumes]
+      summary: Update a resume
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateResumeBody"
+      responses:
+        "200":
+          description: Updated resume
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resume"
+    delete:
+      operationId: deleteResume
+      tags: [resumes]
+      summary: Delete a resume
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /auth/user:
+    get:
+      operationId: getCurrentAuthUser
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Auth state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetCurrentAuthUserResponse"
+
+  /vagas:
+    get:
+      operationId: listJobs
+      tags: [jobs]
+      summary: List all job listings
+      responses:
+        "200":
+          description: List of jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Job"
+
+  /vagas/{id}:
+    get:
+      operationId: getJob
+      tags: [jobs]
+      summary: Get a single job listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Job listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+
+  /cursos:
+    get:
+      operationId: listCourses
+      tags: [courses]
+      summary: List all courses
+      responses:
+        "200":
+          description: List of courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+
+  /cursos/{id}:
+    get:
+      operationId: getCourse
+      tags: [courses]
+      summary: Get a single course
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Course
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+
+  /recomendacoes:
+    get:
+      operationId: getRecommendations
+      tags: [jobs]
+      summary: Get recommended jobs and courses based on resume skills
+      parameters:
+        - name: curriculoId
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Recommendations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationsResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    Company:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        sector:
+          type: string
+        size:
+          type: string
+          enum: [micro, pequena, media, grande]
+        city:
+          type: string
+        state:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - sector
+        - size
+        - city
+        - state
+        - createdAt
+
+    CreateCompanyBody:
+      type: object
+      properties:
+        name:
+          type: string
+        sector:
+          type: string
+        size:
+          type: string
+          enum: [micro, pequena, media, grande]
+        city:
+          type: string
+        state:
+          type: string
+      required:
+        - name
+        - sector
+        - size
+        - city
+        - state
+
+    Indicator:
+      type: object
+      properties:
+        id:
+          type: integer
+        companyId:
+          type: integer
+        category:
+          type: string
+          enum: [salario, jornada, rotatividade, saude_seguranca, diversidade, capacitacao, trabalho_infantil, formalidade]
+        value:
+          type: number
+        unit:
+          type: string
+        period:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - companyId
+        - category
+        - value
+        - unit
+        - period
+        - createdAt
+
+    CreateIndicatorBody:
+      type: object
+      properties:
+        category:
+          type: string
+          enum: [salario, jornada, rotatividade, saude_seguranca, diversidade, capacitacao, trabalho_infantil, formalidade]
+        value:
+          type: number
+        unit:
+          type: string
+        period:
+          type: string
+        notes:
+          type: string
+          nullable: true
+      required:
+        - category
+        - value
+        - unit
+        - period
+
+    Employee:
+      type: object
+      properties:
+        id:
+          type: integer
+        companyId:
+          type: integer
+        name:
+          type: string
+        role:
+          type: string
+        gender:
+          type: string
+          enum: [masculino, feminino, outro, nao_informado]
+        age:
+          type: integer
+        salary:
+          type: number
+        formalContract:
+          type: boolean
+        hiredAt:
+          type: string
+          format: date-time
+        dismissedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - id
+        - companyId
+        - name
+        - role
+        - gender
+        - age
+        - salary
+        - formalContract
+        - hiredAt
+
+    CreateEmployeeBody:
+      type: object
+      properties:
+        name:
+          type: string
+        role:
+          type: string
+        gender:
+          type: string
+          enum: [masculino, feminino, outro, nao_informado]
+        age:
+          type: integer
+        salary:
+          type: number
+        formalContract:
+          type: boolean
+        hiredAt:
+          type: string
+          format: date-time
+        dismissedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - name
+        - role
+        - gender
+        - age
+        - salary
+        - formalContract
+        - hiredAt
+
+    Training:
+      type: object
+      properties:
+        id:
+          type: integer
+        companyId:
+          type: integer
+        title:
+          type: string
+        type:
+          type: string
+          enum: [tecnico, seguranca, lideranca, diversidade, saude, outros]
+        hoursTotal:
+          type: number
+        participantsCount:
+          type: integer
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - companyId
+        - title
+        - type
+        - hoursTotal
+        - participantsCount
+        - createdAt
+
+    CreateTrainingBody:
+      type: object
+      properties:
+        title:
+          type: string
+        type:
+          type: string
+          enum: [tecnico, seguranca, lideranca, diversidade, saude, outros]
+        hoursTotal:
+          type: number
+        participantsCount:
+          type: integer
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - title
+        - type
+        - hoursTotal
+        - participantsCount
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalCompanies:
+          type: integer
+        totalEmployees:
+          type: integer
+        totalTrainings:
+          type: integer
+        averageOds8Score:
+          type: number
+        companiesBySize:
+          type: array
+          items:
+            type: object
+            properties:
+              size:
+                type: string
+              count:
+                type: integer
+            required: [size, count]
+        topPerformers:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              score:
+                type: number
+            required: [id, name, score]
+      required:
+        - totalCompanies
+        - totalEmployees
+        - totalTrainings
+        - averageOds8Score
+        - companiesBySize
+        - topPerformers
+
+    Ods8Score:
+      type: object
+      properties:
+        companyId:
+          type: integer
+        overallScore:
+          type: number
+        level:
+          type: string
+          enum: [critico, insuficiente, regular, bom, excelente]
+        breakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                type: string
+              score:
+                type: number
+              weight:
+                type: number
+            required: [category, score, weight]
+        recommendations:
+          type: array
+          items:
+            type: string
+      required:
+        - companyId
+        - overallScore
+        - level
+        - breakdown
+        - recommendations
+
+    IndicatorTrend:
+      type: object
+      properties:
+        period:
+          type: string
+        category:
+          type: string
+        value:
+          type: number
+      required:
+        - period
+        - category
+        - value
+
+    DiversityBreakdown:
+      type: object
+      properties:
+        genderDistribution:
+          type: array
+          items:
+            type: object
+            properties:
+              gender:
+                type: string
+              count:
+                type: integer
+              percentage:
+                type: number
+            required: [gender, count, percentage]
+        ageGroups:
+          type: array
+          items:
+            type: object
+            properties:
+              group:
+                type: string
+              count:
+                type: integer
+            required: [group, count]
+        formalContractRate:
+          type: number
+      required:
+        - genderDistribution
+        - ageGroups
+        - formalContractRate
+
+    Resume:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        linkedinUrl:
+          type: string
+          nullable: true
+        summary:
+          type: string
+        experiences:
+          type: string
+          description: JSON array of experience objects
+        education:
+          type: string
+          description: JSON array of education objects
+        skills:
+          type: string
+          description: JSON array of skill objects
+        languages:
+          type: string
+          description: JSON array of language objects
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - email
+        - phone
+        - city
+        - state
+        - summary
+        - experiences
+        - education
+        - skills
+        - languages
+        - createdAt
+        - updatedAt
+
+    CreateResumeBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        linkedinUrl:
+          type: string
+          nullable: true
+        summary:
+          type: string
+        experiences:
+          type: string
+        education:
+          type: string
+        skills:
+          type: string
+        languages:
+          type: string
+      required:
+        - name
+        - email
+        - phone
+        - city
+        - state
+        - summary
+        - experiences
+        - education
+        - skills
+        - languages
+
+    AuthUser:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        profileImageUrl:
+          type: string
+          nullable: true
+      required:
+        - id
+        - email
+        - firstName
+        - lastName
+        - profileImageUrl
+
+    GetCurrentAuthUserResponse:
+      type: object
+      properties:
+        user:
+          nullable: true
+          oneOf:
+            - $ref: "#/components/schemas/AuthUser"
+      required:
+        - user
+
+    ExchangeMobileAuthorizationCodeBody:
+      type: object
+      properties:
+        code:
+          type: string
+        code_verifier:
+          type: string
+        redirect_uri:
+          type: string
+        state:
+          type: string
+        nonce:
+          type: string
+          nullable: true
+      required:
+        - code
+        - code_verifier
+        - redirect_uri
+        - state
+
+    ExchangeMobileAuthorizationCodeResponse:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+
+    LogoutMobileSessionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required:
+        - success
+
+    Job:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        company:
+          type: string
+        location:
+          type: string
+        type:
+          type: string
+        area:
+          type: string
+        salaryMin:
+          type: integer
+          nullable: true
+        salaryMax:
+          type: integer
+          nullable: true
+        description:
+          type: string
+        requirements:
+          type: string
+        skills:
+          type: string
+        benefits:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - company
+        - location
+        - type
+        - area
+        - description
+        - requirements
+        - skills
+        - benefits
+        - isActive
+        - createdAt
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        provider:
+          type: string
+        area:
+          type: string
+        level:
+          type: string
+        durationHours:
+          type: integer
+          nullable: true
+        description:
+          type: string
+        skills:
+          type: string
+        url:
+          type: string
+          nullable: true
+        isFree:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - title
+        - provider
+        - area
+        - level
+        - description
+        - skills
+        - isFree
+        - createdAt
+
+    RecommendationsResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: "#/components/schemas/Job"
+        courses:
+          type: array
+          items:
+            $ref: "#/components/schemas/Course"
+      required:
+        - jobs
+        - courses
